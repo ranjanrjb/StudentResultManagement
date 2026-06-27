@@ -1,0 +1,43 @@
+body {
+  margin: 0;
+  background: #f7f1e3;
+  font-family: Georgia, serif;
+}
+
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 230px;
+  background: #6f4e37;
+  color: white;
+  padding: 30px 20px;
+}
+
+.sidebar h2 {
+  margin-bottom: 40px;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.sidebar a {
+  color: white;
+  text-decoration: none;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.sidebar a.active {
+  background: #d9a441;
+}
+
+.content {
+  flex: 1;
+  padding: 40px;
+}
