@@ -7,27 +7,21 @@ import Marks from "./pages/Marks";
 import Results from "./pages/Results";
 
 function App() {
+  return (
+    <div className="bg-amber-100">
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Navigate to="/students" />} />
 
-    return (
+          <Route path="students" element={<Students />} />
 
-        <Routes>
+          <Route path="marks" element={<Marks />} />
 
-            <Route path="/" element={<Layout />}>
-
-                <Route index element={<Navigate to="/students" />} />
-
-                <Route path="students" element={<Students />} />
-
-                <Route path="marks" element={<Marks />} />
-
-                <Route path="results" element={<Results />} />
-
-            </Route>
-
-        </Routes>
-
-    );
-
+          <Route path="results" element={<Results />} />
+        </Route>
+      </Routes>
+    </div>
+  );
 }
 
 export default App;

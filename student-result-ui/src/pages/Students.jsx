@@ -1,5 +1,11 @@
 ﻿import { useEffect, useState } from "react";
 import api from "../services/api";
+import DynamicForm from "../components/DynamicForm";
+import studentSchema from "../validation/studentschema";
+import studentField from "../config/studentField";
+import DynamicTable from "../components/DynamicTable";
+import studentColumns from "../config/studentColumns";
+import { Card, Button, Input, Select } from "../components/ui";
 
 function Students() {
   const emptyStudent = {
@@ -29,42 +35,6 @@ function Students() {
       alert("Failed to load students.");
     } finally {
       setLoading(false);
-    }
-  }
-
-  function handleChange(e) {
-    setStudent({
-      ...student,
-      [e.target.name]: e.target.value,
-    });
-  }
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-
-    if (
-      student.fullName.trim() === "" ||
-      student.email.trim() === "" ||
-      student.dateOfBirth === ""
-    ) {
-      alert("Please fill all fields.");
-      return;
-    }
-
-    try {
-      if (editingId === null) {
-        await api.post("/Students", student);
-        alert("Student added successfully.");
-      } else {
-        await api.put(`/Students/${editingId}`, student);
-        alert("Student updated successfully.");
-      }
-
-      resetForm();
-      loadStudents();
-    } catch (err) {
-      console.error(err);
-      alert("Unable to save student.");
     }
   }
 
@@ -103,134 +73,62 @@ function Students() {
     setStudent(emptyStudent);
   }
 
+  async function handleSubmit(values, { setSubmitting, resetForm: formReset }) {
+    try {
+      if (editingId === null) {
+        await api.post("/Students", values);
+        alert("Student added successfully.");
+      } else {
+        await api.put(`/Students/${editingId}`, values);
+        alert("Student updated successfully.");
+      }
+
+      resetForm();
+      formReset();
+      loadStudents();
+    } catch (err) {
+      console.error(err);
+      alert("Unable to save student.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
-    <div className="container-fluid">
-      <div className="card shadow-sm mb-4">
-        <div className="card-header">
-          <h3 className="mb-0">
-            {editingId === null ? "Add Student" : "Edit Student"}
-          </h3>
-        </div>
+    <div className="space-y-6">
+      <Card className="mb-6">
+        <Card.Header>{editingId ? "Edit Student" : "Add Student"}</Card.Header>
 
-        <div className="card-body">
-          <form onSubmit={handleSubmit}>
-            <div className="row">
-              <div className="col-md-4 mb-3">
-                <label className="form-label">Full Name</label>
+        <Card.Body>
+          <DynamicForm
+            initialValues={student}
+            validationSchema={studentSchema}
+            fields={studentField}
+            editing={editingId !== null}
+            onCancel={resetForm}
+            onSubmit={handleSubmit}
+            entityName={"Student"}
+          />
+        </Card.Body>
+      </Card>
 
-                <input
-                  type="text"
-                  className="form-control"
-                  name="fullName"
-                  value={student.fullName}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-md-4 mb-3">
-                <label className="form-label">Email</label>
-
-                <input
-                  type="email"
-                  className="form-control"
-                  name="email"
-                  value={student.email}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-md-4 mb-3">
-                <label className="form-label">Date of Birth</label>
-
-                <input
-                  type="date"
-                  className="form-control"
-                  name="dateOfBirth"
-                  value={student.dateOfBirth}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-
-            <button className="btn btn-warning me-2" type="submit">
-              {editingId === null ? "Add Student" : "Update Student"}
-            </button>
-
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={resetForm}
-            >
-              Clear
-            </button>
-          </form>
-        </div>
-      </div>
-
-      <div className="card shadow-sm">
-        <div className="card-header">
-          <h3 className="mb-0">Students</h3>
-        </div>
-
-        <div className="card-body">
+      <Card className="min-w-full">
+        <Card.Header>Students</Card.Header>
+        <Card.Body>
           {loading ? (
             <h5>Loading...</h5>
           ) : (
-            <table className="table table-hover table-bordered">
-              <thead className="table-light">
-                <tr>
-                  <th>S.No</th>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Date of Birth</th>
-                  <th>Enrollment</th>
-                  <th width="170">Actions</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {students.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" className="text-center">
-                      No students found.
-                    </td>
-                  </tr>
-                ) : (
-                  students.map((s, index) => (
-                    <tr key={s.studentId}>
-                      <td>{index + 1}</td>
-
-                      <td>{s.fullName}</td>
-
-                      <td>{s.email}</td>
-
-                      <td>{new Date(s.dateOfBirth).toLocaleDateString()}</td>
-
-                      <td>{new Date(s.enrollmentDate).toLocaleDateString()}</td>
-
-                      <td>
-                        <button
-                          className="btn btn-sm btn-primary me-2"
-                          onClick={() => editStudent(s)}
-                        >
-                          Edit
-                        </button>
-
-                        <button
-                          className="btn btn-sm btn-danger"
-                          onClick={() => deleteStudent(s.studentId)}
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+            <DynamicTable
+              data={students}
+              columns={studentColumns}
+              keyField="studentId"
+              onEdit={editStudent}
+              onDelete={deleteStudent}
+              emptyMessage="No students found."
+            />
           )}
-        </div>
-      </div>
+        </Card.Body>
+      </Card>
     </div>
   );
 }

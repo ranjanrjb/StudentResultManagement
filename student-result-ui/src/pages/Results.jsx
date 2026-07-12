@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import { Card, Button, Input, Select } from "../components/ui";
 
 function Results() {
   const [students, setStudents] = useState([]);
@@ -55,19 +56,30 @@ function Results() {
   }
 
   return (
-    <div className="container-fluid">
-      <div className="card shadow-sm mb-4">
-        <div className="card-header">
-          <h3>Student Results</h3>
-        </div>
-
-        <div className="card-body">
-          <div className="row align-items-end">
-            <div className="col-md-8">
-              <label className="form-label">Select Student</label>
-
+    <div className="space-y-6">
+      <Card>
+        <Card.Header>Student Results</Card.Header>
+        <Card.Body>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-black dark:text-white mb-2">
+                View Student Result
+              </label>
               <select
-                className="form-select"
+                className="w-full
+          rounded-lg
+          border
+          border-gray-300 dark:border-gray-600
+          bg-white dark:bg-gray-800
+          text-gray-900 dark:text-white
+          placeholder:text-gray-400 dark:placeholder:text-gray-500
+          px-3
+          py-2
+          outline-none
+          transition-colors duration-300
+          focus:border-blue-500
+          focus:ring-2
+          focus:ring-blue-300"
                 value={selectedStudent}
                 onChange={(e) => setSelectedStudent(e.target.value)}
               >
@@ -80,58 +92,45 @@ function Results() {
                 ))}
               </select>
             </div>
-
-            <div className="col-md-4">
-              <button className="btn btn-warning w-100" onClick={viewResult}>
+            <div>
+              <Button variant="warning" onClick={viewResult}>
                 View Result
-              </button>
+              </Button>
             </div>
           </div>
-        </div>
-      </div>
+        </Card.Body>
+      </Card>
 
       {loading && <h5>Loading...</h5>}
 
       {!loading && result && (
         <>
-          <div className="card shadow-sm mb-4">
-            <div className="card-header">
-              <h4 className="mb-0">Result Summary</h4>
-            </div>
+          <Card>
+            <Card.Header>Result Summary</Card.Header>
 
-            <div className="card-body">
-              <div className="row mb-3">
-                <div className="col-md-6">
-                  <strong>Student Name</strong>
-                </div>
+            <Card.Body>
+              <div>
+                <p className="text-sm text-gray-500">Student Name</p>
 
-                <div className="col-md-6">{result.studentName}</div>
+                <p className="text-lg font-semibold">{result.studentName}</p>
               </div>
 
-              <div className="row mb-3">
-                <div className="col-md-6">
-                  <strong>Total Marks</strong>
-                </div>
+              <div>
+                <p className="text-sm text-gray-500">Total Marks</p>
 
-                <div className="col-md-6">{result.totalMarks}</div>
+                <p className="text-lg font-semibold">{result.totalMarks}</p>
               </div>
 
-              <div className="row mb-3">
-                <div className="col-md-6">
-                  <strong>Average Marks</strong>
-                </div>
+              <div>
+                <p className="text-sm text-gray-500">Average Marks</p>
 
-                <div className="col-md-6">{result.averageMarks}</div>
+                <p className="text-lg font-semibold">{result.averageMarks}</p>
               </div>
-
-              <div className="row mb-3">
-                <div className="col-md-6">
-                  <strong>Grade</strong>
-                </div>
-
-                <div className="col-md-6">
-                  <span className="badge bg-primary">{result.grade}</span>
-                </div>
+              <div>
+                <p className="text-sm text-gray-500">Grade</p>
+                <span className="inline-flex rounded-full bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-700">
+                  {result.grade}
+                </span>{" "}
               </div>
 
               <div className="row">
@@ -141,60 +140,18 @@ function Results() {
 
                 <div className="col-md-6">
                   <span
-                    className={
+                    className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold ${
                       result.status === "Pass"
-                        ? "badge bg-success"
-                        : "badge bg-danger"
-                    }
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-700"
+                    }`}
                   >
                     {result.status}
                   </span>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <div className="card shadow-sm">
-            <div className="card-header">
-              <h4 className="mb-0">Subject-wise Marks</h4>
-            </div>
-
-            <div className="card-body">
-              <table className="table table-bordered table-hover">
-                <thead className="table-light">
-                  <tr>
-                    <th>Subject</th>
-
-                    <th>Marks</th>
-
-                    <th>Date Recorded</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {marks.length === 0 ? (
-                    <tr>
-                      <td colSpan="3" className="text-center">
-                        No marks available.
-                      </td>
-                    </tr>
-                  ) : (
-                    marks.map((mark) => (
-                      <tr key={mark.markId}>
-                        <td>{mark.subjectName}</td>
-
-                        <td>{mark.score}</td>
-
-                        <td>
-                          {new Date(mark.dateRecorded).toLocaleDateString()}
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
+            </Card.Body>
+          </Card>
         </>
       )}
     </div>
