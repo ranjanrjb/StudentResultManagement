@@ -23,6 +23,7 @@ public class MarksController : ControllerBase
     {
         return await _context.Marks
             .Include(m => m.Student)
+            .Include(m => m.Subject)
             .ToListAsync();
     }
 
@@ -33,6 +34,7 @@ public class MarksController : ControllerBase
         return await _context.Marks
             .Where(m => m.StudentId == studentId)
             .Include(m => m.Student)
+            .Include(m => m.Subject)
             .ToListAsync();
     }
 
@@ -50,7 +52,7 @@ public class MarksController : ControllerBase
         var mark = new Mark
         {
             StudentId = dto.StudentId,
-            SubjectName = dto.SubjectName,
+            SubjectId = dto.SubjectId,
             Score = dto.Score
         };
 
@@ -62,10 +64,10 @@ public class MarksController : ControllerBase
     }
 
     // PUT: api/marks/1
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateMark(int id, CreateMarkDto dto)
+    [HttpPut("{studentId}/{subjectId}")]
+    public async Task<IActionResult> UpdateMark(int studentId, int subjectId, CreateMarkDto dto)
     {
-        var mark = await _context.Marks.FindAsync(id);
+        var mark = await _context.Marks.FindAsync(studentId, subjectId);
 
         if (mark == null)
         {
@@ -73,7 +75,7 @@ public class MarksController : ControllerBase
         }
 
         mark.StudentId = dto.StudentId;
-        mark.SubjectName = dto.SubjectName;
+        mark.SubjectId = dto.SubjectId;
         mark.Score = dto.Score;
 
         await _context.SaveChangesAsync();

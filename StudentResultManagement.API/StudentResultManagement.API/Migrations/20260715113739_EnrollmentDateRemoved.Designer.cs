@@ -12,8 +12,8 @@ using StudentResultManagement.API.Data;
 namespace StudentResultManagement.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260624161605_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260715113739_EnrollmentDateRemoved")]
+    partial class EnrollmentDateRemoved
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,28 +27,18 @@ namespace StudentResultManagement.API.Migrations
 
             modelBuilder.Entity("StudentResultManagement.API.Models.Mark", b =>
                 {
-                    b.Property<int>("MarkId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("StudentId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MarkId"));
-
-                    b.Property<DateTime>("DateRecorded")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Score")
                         .HasColumnType("int");
 
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
+                    b.HasKey("StudentId", "SubjectId");
 
-                    b.Property<string>("SubjectName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("MarkId");
-
-                    b.HasIndex("StudentId");
+                    b.HasIndex("SubjectId");
 
                     b.ToTable("Marks");
                 });
@@ -62,14 +52,11 @@ namespace StudentResultManagement.API.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentId"));
 
                     b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("EnrollmentDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -80,6 +67,23 @@ namespace StudentResultManagement.API.Migrations
                     b.ToTable("Students");
                 });
 
+            modelBuilder.Entity("StudentResultManagement.API.Models.Subject", b =>
+                {
+                    b.Property<int>("SubjectID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SubjectID"));
+
+                    b.Property<string>("SubjectName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SubjectID");
+
+                    b.ToTable("Subjects");
+                });
+
             modelBuilder.Entity("StudentResultManagement.API.Models.Mark", b =>
                 {
                     b.HasOne("StudentResultManagement.API.Models.Student", "Student")
@@ -88,10 +92,23 @@ namespace StudentResultManagement.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("StudentResultManagement.API.Models.Subject", "Subject")
+                        .WithMany("Marks")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Student");
+
+                    b.Navigation("Subject");
                 });
 
             modelBuilder.Entity("StudentResultManagement.API.Models.Student", b =>
+                {
+                    b.Navigation("Marks");
+                });
+
+            modelBuilder.Entity("StudentResultManagement.API.Models.Subject", b =>
                 {
                     b.Navigation("Marks");
                 });

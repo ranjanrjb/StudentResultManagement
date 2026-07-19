@@ -55,7 +55,6 @@ public class ResultsController : ControllerBase
             {
                 StudentId = student.StudentId,
                 StudentName = student.FullName,
-                TotalSubjects = student.Marks.Count,
                 TotalMarks = total,
                 AverageMarks = Math.Round(average, 2),
                 Grade = grade,

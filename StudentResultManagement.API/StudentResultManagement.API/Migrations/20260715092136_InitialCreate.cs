@@ -28,31 +28,47 @@ namespace StudentResultManagement.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Marks",
+                name: "Subjects",
                 columns: table => new
                 {
-                    MarkId = table.Column<int>(type: "int", nullable: false)
+                    SubjectID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    StudentId = table.Column<int>(type: "int", nullable: false),
-                    SubjectName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Score = table.Column<int>(type: "int", nullable: false),
-                    DateRecorded = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    SubjectName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Marks", x => x.MarkId);
+                    table.PrimaryKey("PK_Subjects", x => x.SubjectID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Marks",
+                columns: table => new
+                {
+                    SubjectId = table.Column<int>(type: "int", nullable: false),
+                    StudentId = table.Column<int>(type: "int", nullable: false),
+                    Score = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Marks", x => new { x.StudentId, x.SubjectId });
                     table.ForeignKey(
                         name: "FK_Marks_Students_StudentId",
                         column: x => x.StudentId,
                         principalTable: "Students",
                         principalColumn: "StudentId",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Marks_Subjects_SubjectId",
+                        column: x => x.SubjectId,
+                        principalTable: "Subjects",
+                        principalColumn: "SubjectID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Marks_StudentId",
+                name: "IX_Marks_SubjectId",
                 table: "Marks",
-                column: "StudentId");
+                column: "SubjectId");
         }
 
         /// <inheritdoc />
@@ -63,6 +79,9 @@ namespace StudentResultManagement.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "Students");
+
+            migrationBuilder.DropTable(
+                name: "Subjects");
         }
     }
 }

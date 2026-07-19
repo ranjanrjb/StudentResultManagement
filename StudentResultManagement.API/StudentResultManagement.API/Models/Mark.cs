@@ -1,16 +1,10 @@
 ﻿namespace StudentResultManagement.API.Models;
 
-public class Mark
-{
-    public int MarkId { get; set; }
+public class Mark{
+    public int SubjectId { get; set; }
+    public Subject Subject { get; set; }
 
     public int StudentId { get; set; }
-
-    public string SubjectName { get; set; } = string.Empty;
-
+    public Student Student { get; set; }
     public int Score { get; set; }
-
-    public DateTime DateRecorded { get; set; } = DateTime.Now;
-
-    public Student? Student { get; set; }
 }

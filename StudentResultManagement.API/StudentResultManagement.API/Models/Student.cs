@@ -1,4 +1,6 @@
-﻿namespace StudentResultManagement.API.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace StudentResultManagement.API.Models;
 
 public class Student
 {
@@ -8,9 +10,8 @@ public class Student
 
     public string Email { get; set; } = string.Empty;
 
+    [Column(TypeName = "date")]
     public DateTime DateOfBirth { get; set; }
-
-    public DateTime EnrollmentDate { get; set; } = DateTime.Now;
-
     public ICollection<Mark> Marks { get; set; } = new List<Mark>();
+
 }

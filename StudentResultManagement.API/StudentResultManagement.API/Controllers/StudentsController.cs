@@ -47,7 +47,6 @@ public class StudentsController : ControllerBase
             FullName = dto.FullName,
             Email = dto.Email,
             DateOfBirth = dto.DateOfBirth,
-            EnrollmentDate = DateTime.Now
         };
 
         _context.Students.Add(student);

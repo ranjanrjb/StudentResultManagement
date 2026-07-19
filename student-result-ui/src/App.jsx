@@ -5,6 +5,7 @@ import Layout from "./components/Layout";
 import Students from "./pages/Students";
 import Marks from "./pages/Marks";
 import Results from "./pages/Results";
+import RefDemo from "./pages/Results";
 
 function App() {
   return (
@@ -18,6 +19,8 @@ function App() {
           <Route path="marks" element={<Marks />} />
 
           <Route path="results" element={<Results />} />
+
+          <Route path="Test" element={<RefDemo />} />
         </Route>
       </Routes>
     </div>

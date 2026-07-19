@@ -6,6 +6,7 @@ const links = [
   { path: "/students", label: "Students" },
   { path: "/marks", label: "Marks" },
   { path: "/results", label: "Results" },
+  { path: "/RefDemo", label: "Student Result" },
 ];
 
 function Sidebar({ isOpen, onClose }) {
